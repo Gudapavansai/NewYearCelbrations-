@@ -352,32 +352,70 @@ html {
         flex-direction: column;
         height: auto;
         min-height: 100vh;
-        gap: 2rem;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        gap: 3rem;
+        padding: 4rem 1rem;
+        overflow-y: auto;
+        justify-content: flex-start;
     }
 
     .paper-texture {
-        width: 90vw;
-        height: 60vh;
+        width: 95vw;
+        height: 55vh;
+        min-height: 350px;
+        order: 1;
+        border-width: 10px;
     }
 
     .text-wrapper-outer {
-        width: 90vw;
-        max-width: 100%;
+        width: 95vw;
+        min-width: auto;
         order: 2;
-        /* Ensure it comes after */
+        padding: 2rem 1.5rem;
+    }
+
+    .controls {
+        position: relative;
+        bottom: 0;
+        margin-top: 1rem;
+        order: 3;
     }
 
     .line-1 {
-        font-size: 40px;
+        font-size: 38px;
     }
 
     .line-2 {
-        font-size: 50px;
+        font-size: 48px;
     }
 
     .line-3 {
-        font-size: 90px;
+        font-size: 85px;
+    }
+}
+
+@media (max-width: 480px) {
+    .paper-texture {
+        height: 45vh;
+        min-height: 280px;
+    }
+
+    .line-1 {
+        font-size: 30px;
+    }
+
+    .line-2 {
+        font-size: 38px;
+    }
+
+    .line-3 {
+        font-size: 70px;
+    }
+
+    .text-wrapper-outer {
+        padding: 1.5rem 1rem;
+    }
+
+    #app {
+        gap: 2rem;
     }
 }
