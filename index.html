@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2026 - Drawing Animation</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <div id="app">
+        <!-- Fireworks Canvas (Background) -->
+        <canvas id="fireworks-canvas"></canvas>
+
+        <div class="paper-texture">
+
+            <!-- Main Content -->
+            <div class="drawing-container">
+                
+                <!-- Image Drawing Section -->
+                <div class="image-wrapper">
+                    <!-- 4K Resolution ViewBox -->
+                    <svg viewBox="0 0 1920 1080" class="image-svg">
+                        <defs>
+                            <!-- 1. Realistic Pencil Sketch Filter (Preserves Facial Details) -->
+                            <filter id="pencil-texture">
+                                <!-- Step 1: Convert to Grayscale -->
+                                <feColorMatrix type="saturate" values="0" in="SourceGraphic" result="GRAY"/>
+                                
+                                <!-- Step 2: Gentle Contrast Enhancement (preserve mid-tones) -->
+                                <feComponentTransfer in="GRAY" result="ENHANCED">
+                                    <feFuncR type="linear" slope="1.3" intercept="-0.05"/>
+                                    <feFuncG type="linear" slope="1.3" intercept="-0.05"/>
+                                    <feFuncB type="linear" slope="1.3" intercept="-0.05"/>
+                                </feComponentTransfer>
+
+                                <!-- Step 3: Edge Detection for Pencil Lines -->
+                                <feColorMatrix type="matrix" values="-1 0 0 0 1 
+                                                                     0 -1 0 0 1 
+                                                                     0 0 -1 0 1 
+                                                                     0 0 0 1 0" in="ENHANCED" result="INVERTED"/>
+                                
+                                <!-- Step 4: Soft Blur for Natural Edges -->
+                                <feGaussianBlur stdDeviation="1.2" in="INVERTED" result="BLURRED"/>
+                                
+                                <!-- Step 5: Blend for Sketch Effect (lighter touch) -->
+                                <feBlend mode="color-dodge" in="ENHANCED" in2="BLURRED" result="SKETCH"/>
+                                
+                                <!-- Step 6: Subtle Pencil Texture -->
+                                <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" result="NOISE" seed="5"/>
+                                <feColorMatrix in="NOISE" type="saturate" values="0" result="TEXTURE_GRAY"/>
+                                <feComponentTransfer in="TEXTURE_GRAY" result="LIGHT_TEXTURE">
+                                    <feFuncR type="linear" slope="0.08" intercept="0.92"/>
+                                    <feFuncG type="linear" slope="0.08" intercept="0.92"/>
+                                    <feFuncB type="linear" slope="0.08" intercept="0.92"/>
+                                </feComponentTransfer>
+                                
+                                <!-- Step 7: Apply Texture Lightly -->
+                                <feBlend mode="multiply" in="SKETCH" in2="LIGHT_TEXTURE" result="TEXTURED"/>
+                                
+                                <!-- Step 8: Final Adjustment (preserve brightness for faces) -->
+                                <feComponentTransfer in="TEXTURED" result="FINAL">
+                                    <feFuncR type="linear" slope="1.15" intercept="0.05"/>
+                                    <feFuncG type="linear" slope="1.15" intercept="0.05"/>
+                                    <feFuncB type="linear" slope="1.15" intercept="0.05"/>
+                                </feComponentTransfer>
+                            </filter>
+                            
+                            <!-- 2. The Mask for Drawing Animation -->
+                            <mask id="scribble-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+                                <!-- Path injected by JS (uses absolute SVG coordinates) -->
+                                <path id="scribble-path" d="" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                            </mask>
+                        </defs>
+
+                        <!-- Layer 1: Color Photo (Fades in) -->
+                        <image class="color-layer" href="img.jpeg" x="0" y="0" width="100%" height="100%" 
+                               preserveAspectRatio="xMidYMid slice" />
+
+                        <!-- Layer 2: Pencil Sketch (Overlay, Drawn with mask) -->
+                           <image class="sketch-layer" href="skecth.jpeg" x="0" y="0" width="100%" height="100%" 
+                               mask="url(#scribble-mask)" preserveAspectRatio="xMidYMid slice" />
+                    </svg>
+
+
+                </div>
+
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button id="replayBtn" class="btn">Replay Animation</button>
+            </div>
+        </div>
+
+        <!-- Text Box OUTSIDE the paper (Right Side) -->
+        <div class="text-wrapper-outer">
+            <svg viewBox="0 0 400 300" class="text-svg">
+                <defs>
+                    <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#bf953f;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#fcf6ba;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#b38728;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <text x="50%" y="25%" text-anchor="middle" class="svg-text line-1">Happy</text>
+                <text x="50%" y="55%" text-anchor="middle" class="svg-text line-2">New Year</text>
+                <text x="50%" y="85%" text-anchor="middle" class="svg-text line-3">Ashu</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- GSAP Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    
+    <!-- Logic -->
+    <script src="script.js"></script>
+</body>
+</html>
